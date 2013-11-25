@@ -164,9 +164,9 @@ class Post
 
 	protected function _terms($options = null)
 	{
-		$name = isset($options) && isset($options['name']) ? $options['name'] : 'category';
+		$taxonomy = isset($options['taxonomy']) ? $options['taxonomy'] : 'category';
 
-		$terms = wp_get_post_terms($this->id, $name);
+		$terms = wp_get_post_terms($this->id, $taxonomy);
 		$terms = array_map(array('WPModel\Term', 'create'), $terms);
 
 		return $terms;
