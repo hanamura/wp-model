@@ -109,6 +109,13 @@ class Post
 
 	protected function _children($options = null)
 	{
+		$options = array_merge(array(
+			'post_type' => null,
+			'post_mime_type' => null,
+			'id' => null
+		), $options ?: array());
+
+		// init
 		if (!isset($this->_children)) {
 			$children = get_children(array('post_parent' => $this->id));
 			usort($children, function($a, $b) { return $a->menu_order - $b->menu_order; });
@@ -119,7 +126,7 @@ class Post
 		$children = $this->_children;
 
 		// filter by post type
-		if (isset($options['post_type'])) {
+		if ($options['post_type']) {
 			$post_type = $options['post_type'];
 			$children = array_filter($children, function($child) use($post_type) {
 				if (is_array($post_type)) {
@@ -131,7 +138,7 @@ class Post
 		}
 
 		// filter by post mime type
-		if (isset($options['post_mime_type'])) {
+		if ($options['post_mime_type']) {
 			$post_mime_type = $options['post_mime_type'];
 			if (!is_array($post_mime_type)) {
 				$post_mime_type = array($post_mime_type);
@@ -147,11 +154,9 @@ class Post
 		}
 
 		// filter by id
-		if (isset($options['id'])) {
+		if (!is_null($options['id'])) {
 			$id = $options['id'];
-			if (!is_array($id)) {
-				$id = array($id);
-			}
+			is_array($id) || $id = array($id);
 			$children = array_filter($children, function($child) use($id) {
 				return in_array($child->id, $id);
 			});
@@ -164,9 +169,9 @@ class Post
 
 	protected function _terms($options = null)
 	{
-		$taxonomy = isset($options['taxonomy']) ? $options['taxonomy'] : 'category';
+		$options = array_merge(array('taxonomy' => 'category'), $options ?: array());
 
-		$terms = wp_get_post_terms($this->id, $taxonomy);
+		$terms = wp_get_post_terms($this->id, $options['taxonomy']);
 		$terms = array_map(array('WPModel\Term', 'create'), $terms);
 
 		return $terms;
@@ -184,10 +189,10 @@ class Post
 	// image source
 	protected function _image($options = null)
 	{
-		$size = isset($options['size']) ? $options['size'] : 'full';
+		$options = array_merge(array('size' => 'full'), $options ?: array());
 
 		if ($sources = $this->images) {
-			return isset($sources[$size]) ? $sources[$size] : $sources['full'];
+			return isset($sources[$options['size']]) ? $sources[$options['size']] : $sources['full'];
 		} else {
 			return null;
 		}
