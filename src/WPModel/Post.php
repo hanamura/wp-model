@@ -57,7 +57,7 @@ class Post
 		} else if ($name === 'post') {
 			return $this->_post;
 		} else if (in_array($name, static::$_gettables)) {
-			return call_user_func_array(array($this, "_{$name}"), array());
+			return call_user_func_array(array($this, "_$name"), array());
 		} else if (isset($this->_post->$name)) {
 			return $this->_post->$name;
 		} else {
@@ -80,7 +80,7 @@ class Post
 	public function __call($name, $args)
 	{
 		if (in_array($name, static::$_gettables)) {
-			return call_user_func_array(array($this, "_{$name}"), $args);
+			return call_user_func_array(array($this, "_$name"), $args);
 		} else {
 			return null;
 		}
