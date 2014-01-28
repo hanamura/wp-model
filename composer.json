@@ -1,5 +1,7 @@
 {
     "name": "hanamura/wp-model",
+    "description": "Missing functionalities from model objects of WordPress.",
+    "license": "MIT",
     "authors": [
         {
             "name": "Taro Hanamura",
