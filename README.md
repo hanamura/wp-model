@@ -136,6 +136,32 @@ $images['medium'];
 $images['thumbnail'];
 ```
 
+#### ->group, ->group([$options])
+
+Retrieve posts grouped by same terms.
+
+- **$options** *array*
+	- **$options['taxonomy']** *string*  
+		Taxonomy name. Default value: `'category'`
+	- **$options['options']** *array*  
+		Custom arguments for `WP_Query` that is internally called.
+	- **$options['map']** *callable*  
+		Default value: `array('WPModel\Post', 'create')`
+
+**Returns**: *array*
+
+```php
+$post = new WPModel\Post($post_id);
+
+$related_posts = $post->group(array(
+	'taxonomy' => 'custom_taxonomy',
+	'options' => array('posts_per_page' => 5),
+	'map' => function($post) {
+		return CustomPostClass($post);
+	},
+));
+```
+
 #### ->exists, ->exists()
 
 Return `true` if the post exists.
