@@ -11,6 +11,7 @@ class Post
 		'meta',
 		'image',
 		'images',
+		'group',
 		'exists'
 	);
 
@@ -222,6 +223,33 @@ class Post
 			}
 		}
 		return $this->_images;
+	}
+
+	protected function _group($options = null)
+	{
+		$options = array_merge(array(
+			'taxonomy' => 'category',
+			'options' => array(),
+			'map' => array('WPModel\Post', 'create'),
+		), $options ?: array());
+
+		$terms = $this->terms(array('taxonomy' => $options['taxonomy']));
+
+		$args = array_merge(array(
+			'post_type' => $this->post_type,
+			'tax_query' => array(
+				array(
+					'taxonomy' => $options['taxonomy'],
+					'field' => 'slug',
+					'terms' => array_map(function($term) { return $term->slug; }, $terms),
+				),
+			),
+			'post__not_in' => array($this->id),
+		), $options['options'] ?: array());
+
+		$query = new \WP_Query($args);
+
+		return array_map($options['map'], $query->posts);
 	}
 
 
