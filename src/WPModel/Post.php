@@ -235,6 +235,10 @@ class Post
 
 		$terms = $this->terms(array('taxonomy' => $options['taxonomy']));
 
+		if (!$terms) {
+			return array();
+		}
+
 		$args = array_merge(array(
 			'post_type' => $this->post_type,
 			'tax_query' => array(
