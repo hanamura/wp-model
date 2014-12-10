@@ -162,6 +162,27 @@ $related_posts = $post->group(array(
 ));
 ```
 
+#### ->neighbor($options)
+
+Retrieve a prev/next `WP_Post` object. Returns `null` if it doesn’t exist.
+
+- **$options** *array*
+  - **$options['post_type']** *string* | *array*  
+    Post type. Default value: `$this->post_type`
+  - **$options['direction']** *string*  
+    Direction of neighbor: `prev` or `next`
+
+**Returns**: *WP_Post*
+
+```php
+$post = new WPModel\Post($post_id);
+
+$prev_post = $post->neighbor(array(
+  'post_type' => ['post', 'custom_post_type'],
+  'direction' => 'prev',
+));
+```
+
 #### ->exists, ->exists()
 
 Return `true` if the post exists.
