@@ -12,7 +12,8 @@ class Post
     'image',
     'images',
     'group',
-    'exists'
+    'neighbor',
+    'exists',
   );
 
   // create
@@ -254,6 +255,99 @@ class Post
     $query = new \WP_Query($args);
 
     return array_map($options['map'], $query->posts);
+  }
+
+
+
+  // neighbor
+  protected function _neighbor($options)
+  {
+    global $wpdb;
+
+    // options
+    // -------
+
+    $options = array_merge(array(
+      'post_type' => $this->post_type,
+      'direction' => null,
+    ), $options);
+
+    // post types
+
+    $post_type = $options['post_type'];
+    $post_type = is_array($post_type) ? $post_type : array($post_type);
+    $post_type_string = array_map(function($post_type) use($wpdb) {
+      return $wpdb->prepare('%s', $post_type);
+    }, $post_type);
+    $post_type_string = implode(', ', $post_type_string);
+
+    // direction
+
+    $direction = $options['direction'];
+    if ($direction !== 'prev' && $direction !== 'next') {
+      throw new \Exception('direction must be `prev` or `next`');
+    }
+
+    // internal
+
+    $hook_string = ($direction === 'prev') ? 'previous' : 'next';
+    $operator    = ($direction === 'prev') ? '<'        : '>';
+    $order       = ($direction === 'prev') ? 'DESC'     : 'ASC';
+    $cache_key   = "${direction}.${post_type_string}";
+
+    // get cache
+    // ---------
+
+    $post = wp_cache_get($cache_key, __CLASS__);
+
+    if ($post !== false) {
+      return $post;
+    }
+
+    // query
+    // -----
+
+    // join
+
+    $join = apply_filters("get_{$hook_string}_post_join", '', false, '');
+
+    // where
+
+    $where = apply_filters(
+      "get_{$hook_string}_post_where",
+      $wpdb->prepare(
+        "WHERE p.post_date {$operator} %s"
+        . " AND p.post_type IN ({$post_type_string})"
+        . " AND p.post_status = 'publish'"
+        , $this->post_date
+      ),
+      false,
+      ''
+    );
+
+    // sort
+
+    $sort = apply_filters(
+      "get_{$hook_string}_post_sort",
+      "ORDER BY p.post_date {$order} LIMIT 1"
+    );
+
+    // query
+
+    $query = "SELECT p.ID FROM {$wpdb->posts} AS p {$join} {$where} {$sort}";
+
+    // id
+
+    $id = $wpdb->get_row($query);
+
+    // set cache
+    // ---------
+
+    $post = $id ? get_post($id->ID) : null;
+
+    wp_cache_set($cache_key, $post, __CLASS__);
+
+    return $post;
   }
 
 
