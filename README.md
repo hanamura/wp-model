@@ -11,7 +11,7 @@ Extended wrapper of native post object of WordPress, [`WP_Post`](http://codex.wo
 #### new Post($post), Post::create($post)
 
 - **$post** *integer | WP_Post*  
-	Post id or WP_Post object.
+  Post id or WP_Post object.
 
 ```php
 $post = new WPModel\Post($post_id);
@@ -39,12 +39,12 @@ echo $post->permalink;
 Get child posts of the post.
 
 - **$options** *array*
-	- **$options['id']** *integer | array*  
-		Filter by ids.
-	- **$options['post_type']** *string | array*  
-		Filter by post types.
-	- **$options['post_mime_type']** *string | array*  
-		Filter by post mime types.
+  - **$options['id']** *integer | array*  
+    Filter by ids.
+  - **$options['post_type']** *string | array*  
+    Filter by post types.
+  - **$options['post_mime_type']** *string | array*  
+    Filter by post mime types.
 
 **Returns**: *array*
 
@@ -52,13 +52,13 @@ Get child posts of the post.
 $post = new WPModel\Post($post_id);
 
 $children = $post->children(array(
-	'id' => array(10, 11, 12)
+  'id' => array(10, 11, 12)
 ));
 $attachments = $post->children(array(
-	'post_type' => 'attachment'
+  'post_type' => 'attachment'
 ));
 $images = $post->children(array(
-	'post_mime_type' => 'image'
+  'post_mime_type' => 'image'
 ));
 ```
 
@@ -67,8 +67,8 @@ $images = $post->children(array(
 Get terms attached to the post.
 
 - **$options** *array*
-	- **$options['taxonomy']** *string*  
-		Specify taxonomy. Default value: `'category'`
+  - **$options['taxonomy']** *string*  
+    Specify taxonomy. Default value: `'category'`
 
 **Returns**: *array*
 
@@ -76,7 +76,7 @@ Get terms attached to the post.
 $post = new WPModel\Post($post_id);
 
 $custom_terms = $post->terms(array(
-	'taxonomy' => 'custom_taxonomy'
+  'taxonomy' => 'custom_taxonomy'
 ));
 ```
 
@@ -101,8 +101,8 @@ $post->meta->custom_field = 'hello';
 Get WPModel\Image object if the post is an image attachment.
 
 - **$options** *array*
-	- **$options['size']** *string*  
-		Specify size by string (e.g. `'full'`, `'large'`, `'medium'`, `'thumbnail'`). Default value: `'full'`
+  - **$options['size']** *string*  
+    Specify size by string (e.g. `'full'`, `'large'`, `'medium'`, `'thumbnail'`). Default value: `'full'`
 
 **Returns**: *WPModel\Image*
 
@@ -110,7 +110,7 @@ Get WPModel\Image object if the post is an image attachment.
 $post = new WPModel\Post($post_id);
 
 $thumbnail = $post->image(array(
-	'size' => 'thumbnail'
+  'size' => 'thumbnail'
 ));
 echo $thumbnail->url;
 echo $thumbnail->path;
@@ -141,12 +141,12 @@ $images['thumbnail'];
 Retrieve posts grouped by same terms.
 
 - **$options** *array*
-	- **$options['taxonomy']** *string*  
-		Taxonomy name. Default value: `'category'`
-	- **$options['options']** *array*  
-		Custom arguments for `WP_Query` that is internally called.
-	- **$options['map']** *callable*  
-		Default value: `array('WPModel\Post', 'create')`
+  - **$options['taxonomy']** *string*  
+    Taxonomy name. Default value: `'category'`
+  - **$options['options']** *array*  
+    Custom arguments for `WP_Query` that is internally called.
+  - **$options['map']** *callable*  
+    Default value: `array('WPModel\Post', 'create')`
 
 **Returns**: *array*
 
@@ -154,11 +154,11 @@ Retrieve posts grouped by same terms.
 $post = new WPModel\Post($post_id);
 
 $related_posts = $post->group(array(
-	'taxonomy' => 'custom_taxonomy',
-	'options' => array('posts_per_page' => 5),
-	'map' => function($post) {
-		return CustomPostClass($post);
-	},
+  'taxonomy' => 'custom_taxonomy',
+  'options' => array('posts_per_page' => 5),
+  'map' => function($post) {
+    return CustomPostClass($post);
+  },
 ));
 ```
 
@@ -213,9 +213,9 @@ Extended wrapper of native term object of WordPress. See return values of [`wp_g
 #### new Term($term, [$taxonomy]), Term::create($term, [$taxonomy])
 
 - **$term** *integer | term object*  
-	Term id or term object.
+  Term id or term object.
 - **$taxonomy** *string*  
-	Taxonomy name.
+  Taxonomy name.
 
 ```php
 // create by constructor
@@ -224,7 +224,7 @@ $term = new WPModel\Term($term_id, 'custom_taxonomy');
 // get from WPModel\Post
 $post = new WPModel\Post($post_id);
 $terms = $post->terms(array(
-	'taxonomy' => 'custom_taxonomy'
+  'taxonomy' => 'custom_taxonomy'
 ));
 ```
 
@@ -233,12 +233,12 @@ $terms = $post->terms(array(
 Get child terms of the term.
 
 - **$options** *array*  
-	See `$args` of [`get_terms`](http://codex.wordpress.org/Function_Reference/get_terms).
+  See `$args` of [`get_terms`](http://codex.wordpress.org/Function_Reference/get_terms).
 
 ```php
 $child_terms = $term->children(array(
-	'orderby' => 'count',
-	'hide_empty' => false
+  'orderby' => 'count',
+  'hide_empty' => false
 ));
 ```
 
@@ -253,7 +253,7 @@ Extended wrapper of native user object of WordPress, [`WP_User`](http://codex.wo
 #### new User([$user]), User::create([$user])
 
 - **$user** *integer | WP_User*  
-	User id or WP_User object. If not specified, returns current user.
+  User id or WP_User object. If not specified, returns current user.
 
 ```php
 // current user
